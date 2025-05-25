@@ -1,3 +1,8 @@
+---
+date: 2025-05-25
+title: Writing a static site generator
+---
+
 # Writing a static site generator
 
 I want to have a place where I can write things without feeling they matter. Not that
@@ -14,3 +19,5 @@ but build my own static site generator. Like every sane engineer would do.
 At least I'm now able to write about it while I work on it and improve it.
 
 This is basically working (even though it is very rough around the edges). Let's get this thing deployed.
+
+**Update 2025-05-25**: We now have basic frontmatter support, allowing for adding a `date` and `title` to the posts.

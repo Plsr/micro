@@ -1,6 +1,8 @@
 import fs from "fs/promises";
 import { marked } from "marked";
+import matter from "gray-matter";
 import path from "path";
+import { singlePageTemplate } from "./generatePage";
 
 async function readFile(path: string) {
   try {
@@ -12,10 +14,25 @@ async function readFile(path: string) {
   }
 }
 
-async function convertMarkdownToHtml(markdown: string): Promise<string> {
+type SupportedMetaData = "title" | "date";
+
+export type FileData = {
+  content: string;
+  metadata: Record<SupportedMetaData, string>;
+};
+
+async function convertMarkdownToHtml(markdown: string): Promise<FileData> {
   try {
-    const html = marked(markdown);
-    return html;
+    const parsed = matter(markdown);
+    console.log("Parsed front matter:", parsed);
+    const htmlContent = await marked(parsed.content);
+    return {
+      content: htmlContent,
+      metadata: {
+        title: parsed.data.title || "Untitled",
+        date: parsed.data.date || new Date().toISOString(),
+      },
+    };
   } catch (error) {
     console.error("Error converting markdown to HTML:", error);
     throw error;
@@ -35,8 +52,12 @@ export async function convertFile(pathName: string) {
   const fileName = path.basename(pathName, ".md");
   const markdownContent = await readFile(pathName);
   if (markdownContent) {
-    const htmlContent = await convertMarkdownToHtml(markdownContent);
-    console.log(htmlContent);
+    const fileData = await convertMarkdownToHtml(markdownContent);
+    const htmlContent = singlePageTemplate(
+      fileData.content,
+      fileData.metadata.date,
+      fileData.metadata.title
+    );
     await writeHtmlToFile(htmlContent, fileName);
   }
 }

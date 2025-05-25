@@ -32,3 +32,20 @@ export const generateIndexPage = async (outputDir: string = "output") => {
     throw error;
   }
 };
+
+export const singlePageTemplate = (
+  content: string,
+  date: string,
+  title: string
+) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <title>${title}</title>
+</head>
+<body>
+  ${content}
+  <small>Created: ${date}</small>
+</body>
+</html>
+`;
