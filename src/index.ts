@@ -4,6 +4,7 @@ import { Generator } from "./generator";
 export const config = {
   contentDir: "content",
   outputDir: "output",
+  title: "Chris' Weblog",
 };
 
 async function main() {

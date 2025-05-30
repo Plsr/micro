@@ -20,7 +20,11 @@ export class Generator {
   async generatePosts() {
     await Promise.all(
       this.posts.map((post) => {
-        const htmlPage = baseHtmlTemplate(post.metadata.title, post.content);
+        const htmlPage = baseHtmlTemplate(
+          post.metadata.title,
+          post.content,
+          true
+        );
         try {
           fs.writeFile(
             `${config.outputDir}/${post.metadata.slug}.html`,
@@ -40,13 +44,13 @@ export class Generator {
         (post) =>
           `<li><a href="${path.basename(
             `${config.outputDir}/${post.metadata.slug}.html`
-          )}">${post.metadata.title}</a></li>`
+          )}">${post.metadata.title}</a> (${post.metadata.date})</li>`
       )
       .join("\n");
     // Need the links for all posts here eventually
     const htmlContent = `
-    <h1>Hello, World!</h1>
-    <h2>Links to Markdown Files</h2>
+    <h1>${config.title}</h1>
+    <h2>Posts</h2>
     <ul>
       ${links}
     </ul>
@@ -85,14 +89,39 @@ export class Generator {
   }
 }
 
-const baseHtmlTemplate = (title: string, body: string) => `
+const topNavigation = () => `
+<nav>
+  <a href="${path.basename(`${config.outputDir}/index.html`)}">Home</a>
+</nav>
+`;
+
+const baseHtmlTemplate = (
+  title: string,
+  body: string,
+  withNavigation: boolean = false
+) => `
 <!DOCTYPE html>
 <html>
   <head>
     <title>${title}</title>
+    <style>
+      ${baseStyles}
+    </style>
   </head>
   <body>
+    ${withNavigation ? topNavigation() : ""}
     ${body}
   </body>
 </html>
+`;
+
+const baseStyles = `
+body {
+  font-family: Tahoma, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f0f0;
+  max-width: 600px;
+  margin: 0 auto;
+}
 `;
