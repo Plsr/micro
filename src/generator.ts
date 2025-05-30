@@ -58,7 +58,7 @@ export class Generator {
 
     console.log(htmlContent);
 
-    const htmlPage = baseHtmlTemplate("Index", htmlContent);
+    const htmlPage = baseHtmlTemplate(config.title, htmlContent);
 
     try {
       fs.writeFile(`${config.outputDir}/index.html`, htmlPage);
